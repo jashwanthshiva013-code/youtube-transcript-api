@@ -17,13 +17,18 @@ def get_transcript(url: str):
     os.makedirs(output_dir, exist_ok=True)
 
     ydl_opts = {
+        "quiet": True,
         "skip_download": True,
         "writesubtitles": True,
         "writeautomaticsub": True,
         "subtitleslangs": ["en"],
         "subtitlesformat": "vtt",
         "outtmpl": os.path.join(output_dir, "%(id)s"),
-        "quiet": True,
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android"]
+            }
+        }
     }
 
     try:
