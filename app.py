@@ -1,20 +1,30 @@
 from fastapi import FastAPI
-from youtube_transcript_api import YouTubeTranscriptApi
+from yt_dlp import YoutubeDL
 
 app = FastAPI()
 
+
 @app.get("/")
 def home():
-    return {"message": "YouTube Transcript API is running"}
+    return {"message": "API Running"}
+
 
 @app.get("/transcript")
-def transcript(videoId: str):
-    api = YouTubeTranscriptApi()
-    transcript = api.fetch(videoId)
+def transcript(url: str):
 
-    text = " ".join([item.text for item in transcript])
+    ydl_opts = {
+        "skip_download": True,
+        "writesubtitles": True,
+        "writeautomaticsub": True,
+        "subtitleslangs": ["en"],
+        "quiet": True,
+    }
+
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
 
     return {
-        "videoId": videoId,
-        "transcript": text
+        "title": info.get("title"),
+        "description": info.get("description"),
+        "duration": info.get("duration"),
     }
