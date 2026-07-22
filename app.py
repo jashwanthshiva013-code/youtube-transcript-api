@@ -9,8 +9,11 @@ def home():
 
 @app.get("/transcript")
 def transcript(videoId: str):
-    data = YouTubeTranscriptApi.get_transcript(videoId)
-    text = " ".join([item["text"] for item in data])
+    api = YouTubeTranscriptApi()
+    transcript = api.fetch(videoId)
+
+    text = " ".join([item.text for item in transcript])
+
     return {
         "videoId": videoId,
         "transcript": text
